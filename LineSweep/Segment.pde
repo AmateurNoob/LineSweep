@@ -11,23 +11,15 @@ class Segment{
     //private Segment prev;
     private float xCoord1;
     private float xCoord2;
-    private float yCoord;
-    private int red, green, blue;
-    private String name;
-    private int sWeight;
-    private boolean isAlive;  
+    private float yCoord1;
+    private float yCoord2;  
     
-    public Segment( String sname,float x1, float x2, float y, int r, int g, int b)
+    public Segment(float x1, float y1, float x2, float y2)
     {
-        xCoord1 = x1 ;
+        xCoord1 = x1;
         xCoord2 = x2;
-        yCoord = y ; //help translate the y-coordinate system
-        name = sname;
-        red = r;
-        blue = b;
-        green = g;
-        sWeight = 3;
-        isAlive = false;
+        yCoord1 = y1; 
+        yCoord2 = y2;
         
     }//END Constructor
     
@@ -46,59 +38,14 @@ class Segment{
         return xCoord2;
     }
     
-    public void setY(float y)
+    public float getY1()
     {
-        yCoord = y;
+        return yCoord1;
     }
     
-    public float getY()
+    public float getY2()
     {
-        return yCoord;
-    }
-    
-    public int getR(){
-      return red;
-    }
-    
-    public int getG(){
-      return green;
-    }
-    
-    public int getB(){
-      return blue;
-    }
-    
-    public void setName(String sname)
-    {
-        name = sname;
-    }
-    
-    public String getName()
-    {
-        return name;
-    }
-    
-    public String toString()
-    {
-        String str = null;
-        str = name + "\n";
-        str += "   x1: "+ xCoord1 + " x2: " + xCoord2 + " y: " + (yCoord);
-        return str;
-    }
-    
-    public void setStrokeWeight(int weight)
-    {
-        sWeight = weight;
-    }
-    
-    public void setState(boolean state)
-    {
-        isAlive = state;
-    }
-    
-    public boolean getState()
-    {
-        return isAlive;
+        return yCoord2;
     }
     
     /*********** End Getters and Setters ********/
@@ -111,13 +58,13 @@ class Segment{
     {
         //scale(1,-1);
         //translate(0,-height);
-        strokeWeight(sWeight);
+        strokeWeight(3);
         /*
         * Need to subtract 700 that line is drawn properly pretending that (0,0) is on bottom left corner of 
         * of white rectangle
         */
-        stroke(red, green, blue);
-        line(xCoord1, 400-yCoord, xCoord2, 400-yCoord);
+        System.out.println("x1 " + xCoord1 + " y1 " + yCoord1 + " x2 " + xCoord2 + " y2 " + yCoord2);
+        line(xCoord1, 400 - yCoord1, xCoord2, 400 - yCoord2);
         //stroke(red, green, blue);
     }//END drawSwg
     
