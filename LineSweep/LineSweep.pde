@@ -6,15 +6,20 @@
  */
  
 import controlP5.*;
+import java.util.Arrays;
 
   // Legacy imports
-//import java.util.LinkedList;
+import java.util.LinkedList;
 //import java.io.PrintStream;
 
 ControlP5 cp5;
 String filename;
+SkipList SL = new SkipList();
 
 Segment[] segs;
+Segment[] segsX2;
+
+LinkedList<Cut> cuts = new LinkedList<Cut>();
 
 boolean drawSegsFlag = false;
 
@@ -108,6 +113,20 @@ void keyPressed() {
       if(filename != null)
         loadData();    
        
+       // Array of segments are sorted by x1-val
+       segsX2 = Arrays.copyOf(segs, segs.length);
+       
+       // swap x values
+       
+       for(Segment seg : segsX2){
+         seg.setX(seg.getX2(), seg.getX1());
+         seg.setY(seg.getY2(), seg.getY1());
+       }
+       
+       Arrays.sort(segs);
+       Arrays.sort(segsX2);
+       buildList();
+       
           //Writing output file
        //try{
          
@@ -131,6 +150,99 @@ void keyPressed() {
      
 }
 
+void buildList(){
+  for(float i = 0; i <= 800; i ++){
+    Segment ref = null;
+    ref = binarySearchX1(i);
+    
+    if(ref == null)
+      ref = binarySearchX2(i);
+    
+    if(ref != null){
+      //float pVal = findPredecessor(ref, i);
+      //float sVal = findSuccessor(ref, i);
+      
+      float pVal = MIN_FLOAT;
+      float sVal = MAX_FLOAT;
+      
+      float yVal = findY(ref, i);
+      
+      for(Segment seg : segs){
+        // Still have to check if x values of the segment bound your ref segment
+        
+        float tempY = findY(seg, i);
+        System.out.println("Y val: " + tempY);
+        
+        if(tempY < sVal && tempY > yVal){
+          sVal = tempY;
+        }
+        if(tempY > pVal && tempY < yVal){
+          pVal = tempY;
+        }
+      }
+      
+      if(pVal == MIN_FLOAT)
+        pVal = 0;
+      if(sVal == MAX_FLOAT)
+        sVal = 800;
+      
+      Cut pCut = new Cut(i, pVal, yVal, /*pred.ID*/ 0, /*seg.ID*/ 0);
+      Cut sCut = new Cut(i, yVal, sVal, /*seg.ID*/ 0, /*succ.ID*/ 0);
+      
+      //System.out.println(pCut.getY1() + " " + pCut.getY2());
+      //System.out.println(sCut.getY1() + " " + sCut.getY2());
+      
+      SL.add(pCut);
+      SL.add(sCut);
+      
+      cuts.add(pCut);
+      cuts.add(sCut);
+    }
+  }
+}
+
+float findY(Segment ref, float cutX){
+  float slope = (ref.getY1() - ref.getY2()) / (ref.getX1() - ref.getX2());
+  
+  return (slope * (cutX - ref.getX1())) + ref.getY1();
+}
+
+Segment binarySearchX1(float sVal){
+  int j = 0;
+  int k = segs.length-1;
+  
+  while(k >= j){
+    
+    int mid = (j + k)/2;
+    if(segs[mid].getX1() == sVal)
+      return segs[mid];
+    else if(segs[mid].getX1() < sVal)
+      j = mid + 1;
+    else if(segs[mid].getX1() > sVal)
+      k = mid - 1;
+  }
+  
+  return null;
+}
+
+Segment binarySearchX2(float sVal){
+  int j = 0;
+  int k = segsX2.length-1;
+  
+  while(k >= j){
+    int mid = (j + k)/2;
+    if(segsX2[mid].getX2() == sVal)
+      return segsX2[mid];
+    else if(segsX2[mid].getX2() < sVal)
+      j = mid + 1;
+    else if(segsX2[mid].getX2() > sVal)
+      k = mid - 1;
+  }
+  
+  return null;
+}
+
+
 void draw() {
   if(filename != null){
     clear();
@@ -145,6 +257,13 @@ void draw() {
         for(Segment seg: segs){
             seg.drawSeg();
         }
+        
+        //print(cuts.size());
+        
+        for(Cut c: cuts){
+          c.drawCut();
+        }
+        
     
     } 
 }
