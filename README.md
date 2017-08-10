@@ -11,6 +11,8 @@ if(i == Seg.X())     // Binary searching for X
 	Cut.addToSkipList()
 	drawCut()
 
+The y-value for the cut is calculated using Slope-Intercept form.
+
 Controls - 
 Spacebar advances the sweeping line, and displays output as it was generated
 by our algorithm. One tap of the spacebar is equal to one step further in our 
