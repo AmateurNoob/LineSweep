@@ -208,7 +208,7 @@ void buildList(){
       SL.head = SL.add(pCut, SL.head, level(), SL.height);
       SL.head = SL.add(sCut, SL.head, level(), SL.height);
       
-      SL.head.printList();
+      //SL.head.printList();
       
       cuts.add(pCut);
       cuts.add(sCut);
