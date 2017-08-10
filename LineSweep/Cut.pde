@@ -37,6 +37,14 @@ class Cut{
       return y_sink;
     }
     
+    int getIDSource(){
+     return id_source; 
+    }
+    
+    int getIDSink(){
+      return id_sink;
+    }
+    
     void drawCut()
     {
         //scale(1,-1);

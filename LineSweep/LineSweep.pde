@@ -19,9 +19,11 @@ SkipList SL = new SkipList();
 Segment[] segs;
 Segment[] segsX2;
 
+int cutCounter = -1;
 LinkedList<Cut> cuts = new LinkedList<Cut>();
 
 boolean drawSegsFlag = false;
+boolean drawFlag = false;
 
 void setup() {
   // Window is the size of our input range
@@ -128,24 +130,28 @@ void keyPressed() {
        buildList();
        
           //Writing output file
-       //try{
+       try{
          
-       //  // Output file is currently sent to Desktop via absolute path
-       //  // Use Users/Chris/Documents/Processing/CSc345_A1/data/ if you want the output file sent to the data file
-       //  // (With Replacement of User name, along with any other changes in file path on your machine)
-       //   PrintWriter writer = new PrintWriter("/Users/Chris/Desktop/" + filename.substring(0,filename.length()-3) + ".out", "UTF-8");
-       //   writer.println(lowerEnv.size());
+         // Output file is currently sent to Desktop via absolute path
+         // Use Users/Chris/Documents/Processing/CSc345_A1/data/ if you want the output file sent to the data file
+         // (With Replacement of User name, along with any other changes in file path on your machine)
+          PrintWriter writer = new PrintWriter("/Users/Chris/Desktop/" + filename.substring(0,filename.length()-3) + ".out", "UTF-8");
+          writer.println(cuts.size());
           
-       //   for(int i = 0; i < lowerEnv.size(); i++){
-       //     System.out.println(i);
-       //     writer.println("" + lowerEnv.get(i).getX1() + " " + lowerEnv.get(i).getX2() + " " + lowerEnv.get(i).getY()
-       //     + " " + lowerEnv.get(i).getR() + " " + lowerEnv.get(i).getG() + " " + lowerEnv.get(i).getB());
-       //   }
+          for(int i = 0; i < cuts.size(); i++){
+            writer.println("" + cuts.get(i).getX() + " " + cuts.get(i).getY1() + " " + cuts.get(i).getY2()
+            + " " + cuts.get(i).getIDSource() + " " + cuts.get(i).getIDSink());
+          }
        
-       //   writer.close();
-       // } catch (IOException e) {
-       //   e.printStackTrace();
-       // }
+          writer.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+    }
+    
+    if(key == ' ' && filename != null) {
+      if(cutCounter < cuts.size()-1)
+        cutCounter++;
     }
      
 }
@@ -165,20 +171,29 @@ void buildList(){
       float pVal = MIN_FLOAT;
       float sVal = MAX_FLOAT;
       
+      int pID = 0;
+      int sID = 0;
+      int counter = 0;
+      
+      
       float yVal = findY(ref, i);
       
       for(Segment seg : segs){
         // Still have to check if x values of the segment bound your ref segment
         
         float tempY = findY(seg, i);
-        System.out.println("Y val: " + tempY);
+        //System.out.println("Y val: " + tempY);
         
-        if(tempY < sVal && tempY > yVal){
-          sVal = tempY;
-        }
-        if(tempY > pVal && tempY < yVal){
-          pVal = tempY;
-        }
+         if(tempY < sVal && tempY > yVal){
+           sVal = tempY;
+           sID = counter;
+         }
+         if(tempY > pVal && tempY < yVal){
+           pVal = tempY;
+           pID = counter;
+         }
+        
+        counter++;
       }
       
       if(pVal == MIN_FLOAT)
@@ -186,8 +201,8 @@ void buildList(){
       if(sVal == MAX_FLOAT)
         sVal = 800;
       
-      Cut pCut = new Cut(i, pVal, yVal, /*pred.ID*/ 0, /*seg.ID*/ 0);
-      Cut sCut = new Cut(i, yVal, sVal, /*seg.ID*/ 0, /*succ.ID*/ 0);
+      Cut pCut = new Cut(i, pVal, yVal, pID, sID);
+      Cut sCut = new Cut(i, yVal, sVal, sID, pID);
       
       //System.out.println(pCut.getY1() + " " + pCut.getY2());
       //System.out.println(sCut.getY1() + " " + sCut.getY2());
@@ -260,10 +275,28 @@ void draw() {
         
         //print(cuts.size());
         
-        for(Cut c: cuts){
-          c.drawCut();
+        for(int i = 0; i <= cutCounter; i++){
+          System.out.println(cuts.get(i).getIDSource() + " " + cuts.get(i).getIDSink());
+          cuts.get(i).drawCut();
         }
-        
-    
     } 
+    
+    if(filename != null){
+      fill(0, 0, 255, 127);
+      
+      if(drawFlag){
+        rect(segs[cutCounter/2-segs.length].getX1()-5, 0, 10, 400);
+      }
+      else{
+        if(cutCounter/2 == segs.length){
+          drawFlag = true;
+        }
+        else
+          rect(segs[cutCounter/2].getX2()-5, 0, 10, 400); 
+        
+      }
+      
+    }
+    
+    
 }
