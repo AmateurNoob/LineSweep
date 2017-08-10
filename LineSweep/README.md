@@ -23,5 +23,5 @@ In order to see the output file - "Chris" should be replaced with your username 
 
 This same outfile generation was present in my code for the generation of the lowerEnvelope, but I don't believe that this necessary change was noted at the time of grading.
 
-GUI Issues - 
+GUI Issues - Given issues with processing, some of our lines are not being fully extended, as their x/y values are sometimes swapped. This stems from processings X/Y plane being flipped when drawing lines or any other images. This was an issue at multiple points during out generation of cuts, and extending the cut to either the top or lower bound of our window. However, the algorithm is sound, and cuts are always generated with the proper size in the proper location. Our GUI is simply flawed. 
 

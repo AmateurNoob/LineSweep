@@ -1,6 +1,5 @@
 /*
- *  Author: Chris Mason
- *  Sidekick: Michael Beiley
+ *  Authors: Chris Mason, Michael Beiley
  *
  *  CSc 345, Professor Alon Efrat
  */
@@ -65,7 +64,6 @@ void loadData() {
                 segs = new Segment[Integer.parseInt(str)];
             }
             else{ // Readline to get values for the segment to be created
-            // ****** IF SOMETHINGS FUCKED: CHECK HERE *******
                 String[] arr = str.split("\\s+"); //Split string on any whitespace, original code only split on spaces
                 // Splitting only on spaces causes issues with parsing
                
@@ -207,8 +205,10 @@ void buildList(){
       //System.out.println(pCut.getY1() + " " + pCut.getY2());
       //System.out.println(sCut.getY1() + " " + sCut.getY2());
       
-      SL.add(pCut);
-      SL.add(sCut);
+      SL.head = SL.add(pCut, SL.head, level(), SL.height);
+      SL.head = SL.add(sCut, SL.head, level(), SL.height);
+      
+      SL.head.printList();
       
       cuts.add(pCut);
       cuts.add(sCut);
@@ -216,6 +216,15 @@ void buildList(){
   }
 }
 
+int level(){
+ 
+   int k = 0;
+   while((int)random(1) == 1){
+       k++; 
+    }
+    
+    return k;
+}
 float findY(Segment ref, float cutX){
   float slope = (ref.getY1() - ref.getY2()) / (ref.getX1() - ref.getX2());
   
